@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Failure Prediction System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: none;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 20px;
+        }
+        
+        .feature-input {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .feature-input:focus-within {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .feature-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .feature-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+        }
+        
+        .form-range {
+            height: 8px;
+            border-radius: 10px;
+            background: transparent;
+            position: relative;
+        }
+        
+        .form-range::-webkit-slider-track {
+            height: 8px;
+            border-radius: 10px;
+            background: #dee2e6;
+        }
+        
+        .form-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);
+            transition: all 0.2s;
+            margin-top: -8px;
+        }
+        
+        .form-range::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.6);
+        }
+        
+        .form-range::-moz-range-track {
+            height: 8px;
+            border-radius: 10px;
+            background: #dee2e6;
+        }
+        
+        .form-range::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);
+            transition: all 0.2s;
+        }
+        
+        .form-range::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.6);
+        }
+        
+        .slider-container {
+            position: relative;
+            padding: 10px 0;
+        }
+        
+        .slider-track-fill {
+            position: absolute;
+            height: 8px;
+            border-radius: 10px 0 0 10px;
+            background: linear-gradient(90deg, var(--success-color) 0%, var(--secondary-color) 100%);
+            top: 10px;
+            left: 0;
+            pointer-events: none;
+            transition: width 0.1s ease;
+            z-index: 0;
+        }
+        
+        .form-range {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .value-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-align: right;
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-predict {
+            background: linear-gradient(135deg, var(--success-color) 0%, #229954 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+        
+        .btn-reset {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(127, 140, 141, 0.4);
+        }
+        
+        .result-card {
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .prediction-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .probability-bar {
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #e9ecef;
+            margin: 10px 0;
+        }
+        
+        .probability-fill {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease-out;
+        }
+        
+        .stats-badge {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .info-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .spinner-border {
+            display: none;
+        }
+        
+        .loading .spinner-border {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="text-center text-white mb-4">
+            <h1 class="display-4 fw-bold">
+                <i class="fas fa-cogs"></i> Machine Failure Prediction System
+            </h1>
+            <p class="lead">AI-Powered Predictive Maintenance | 99.9% Accuracy</p>
+        </div>
+
+        <div class="row">
+            <!-- Input Section -->
+            <div class="col-lg-7 col-xl-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-sliders-h"></i> Machine Parameters</h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="predictionForm">
+                            <!-- Air Temperature -->
+                            <div class="feature-input">
+                                <label class="feature-label">
+                                    <span class="feature-icon"><i class="fas fa-thermometer-half"></i></span>
+                                    Air Temperature [K]
+                                </label>
+                                <div class="slider-container">
+                                    <div class="slider-track-fill" id="air_temp_fill"></div>
+                                    <input type="range" class="form-range" id="air_temp" min="290" max="310" step="0.1" value="300">
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">290K</small>
+                                    <span class="value-display" id="air_temp_val">300.0 K</span>
+                                    <small class="text-muted">310K</small>
+                                </div>
+                            </div>
+
+                            <!-- Process Temperature -->
+                            <div class="feature-input">
+                                <label class="feature-label">
+                                    <span class="feature-icon"><i class="fas fa-fire"></i></span>
+                                    Process Temperature [K]
+                                </label>
+                                <div class="slider-container">
+                                    <div class="slider-track-fill" id="process_temp_fill"></div>
+                                    <input type="range" class="form-range" id="process_temp" min="300" max="320" step="0.1" value="310">
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">300K</small>
+                                    <span class="value-display" id="process_temp_val">310.0 K</span>
+                                    <small class="text-muted">320K</small>
+                                </div>
+                            </div>
+
+                            <!-- Rotational Speed -->
+                            <div class="feature-input">
+                                <label class="feature-label">
+                                    <span class="feature-icon"><i class="fas fa-sync"></i></span>
+                                    Rotational Speed [rpm]
+                                </label>
+                                <div class="slider-container">
+                                    <div class="slider-track-fill" id="rotational_speed_fill"></div>
+                                    <input type="range" class="form-range" id="rotational_speed" min="1000" max="3000" step="1" value="1500">
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">1000 rpm</small>
+                                    <span class="value-display" id="rotational_speed_val">1500 rpm</span>
+                                    <small class="text-muted">3000 rpm</small>
+                                </div>
+                            </div>
+
+                            <!-- Torque -->
+                            <div class="feature-input">
+                                <label class="feature-label">
+                                    <span class="feature-icon"><i class="fas fa-bolt"></i></span>
+                                    Torque [Nm]
+                                </label>
+                                <div class="slider-container">
+                                    <div class="slider-track-fill" id="torque_fill"></div>
+                                    <input type="range" class="form-range" id="torque" min="0" max="100" step="0.1" value="40">
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">0 Nm</small>
+                                    <span class="value-display" id="torque_val">40.0 Nm</span>
+                                    <small class="text-muted">100 Nm</small>
+                                </div>
+                            </div>
+
+                            <!-- Tool Wear -->
+                            <div class="feature-input">
+                                <label class="feature-label">
+                                    <span class="feature-icon"><i class="fas fa-tools"></i></span>
+                                    Tool Wear [min]
+                                </label>
+                                <div class="slider-container">
+                                    <div class="slider-track-fill" id="tool_wear_fill"></div>
+                                    <input type="range" class="form-range" id="tool_wear" min="0" max="300" step="1" value="100">
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">0 min</small>
+                                    <span class="value-display" id="tool_wear_val">100 min</span>
+                                    <small class="text-muted">300 min</small>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="row mt-4">
+                                <div class="col-md-6 mb-2">
+                                    <button type="submit" class="btn btn-predict" id="predictBtn">
+                                        <span class="spinner-border spinner-border-sm me-2"></span>
+                                        <i class="fas fa-chart-line"></i> Predict
+                                    </button>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button type="button" class="btn btn-reset" onclick="resetForm()">
+                                        <i class="fas fa-redo"></i> Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Information Section -->
+                        <div class="info-section mt-4">
+                            <h6 class="fw-bold"><i class="fas fa-info-circle"></i> Parameter Guidelines</h6>
+                            <div class="stats-badge">
+                                <strong>Normal Operating Ranges:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li>Air Temp: 296-304 K (23-31°C)</li>
+                                    <li>Process Temp: 306-313 K (33-40°C)</li>
+                                    <li>Rotational Speed: 1200-1800 rpm</li>
+                                    <li>Torque: 20-60 Nm</li>
+                                    <li>Tool Wear: 0-250 min</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="col-lg-5 col-xl-6">
+                <!-- Initial Info Card -->
+                <div class="card" id="infoCard">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-info-circle"></i> About This System</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <i class="fas fa-robot text-primary" style="font-size: 5rem; margin: 30px 0;"></i>
+                        <h5 class="fw-bold">AI-Powered Predictive Maintenance</h5>
+                        <p class="text-muted">
+                            This system uses machine learning to predict potential machine failures based on operational parameters.
+                        </p>
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <div class="stats-badge text-center">
+                                    <h3 class="text-success mb-0">99.9%</h3>
+                                    <small class="text-muted">Accuracy</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stats-badge text-center">
+                                    <h3 class="text-primary mb-0">10,000</h3>
+                                    <small class="text-muted">Training Samples</small>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <h6 class="fw-bold mt-4">How to Use:</h6>
+                        <ol class="text-start">
+                            <li>Adjust the machine parameter sliders to match your current readings</li>
+                            <li>Click the "Predict" button to analyze failure risk</li>
+                            <li>Review the prediction results and recommendations</li>
+                            <li>Take appropriate maintenance actions based on risk level</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Result Card -->
+                <div class="card result-card" id="resultCard">
+                    <div class="card-header">
+                        <h4 class="mb-0"><i class="fas fa-clipboard-check"></i> Prediction Results</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="prediction-icon" id="predictionIcon"></div>
+                        <h3 class="fw-bold mb-3" id="riskLevel"></h3>
+                        <p class="lead" id="predictionMessage"></p>
+
+                        <hr class="my-4">
+
+                        <h5 class="fw-bold mb-3">Failure Probability Analysis</h5>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Failure Risk:</span>
+                                <span id="failureProbText" class="fw-bold"></span>
+                            </div>
+                            <div class="probability-bar">
+                                <div class="probability-fill" id="failureProbBar"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>Normal Operation:</span>
+                                <span id="normalProbText" class="fw-bold"></span>
+                            </div>
+                            <div class="probability-bar">
+                                <div class="probability-fill bg-success" id="normalProbBar"></div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="stats-badge">
+                            <h6 class="fw-bold"><i class="fas fa-exclamation-triangle"></i> Recommendations</h6>
+                            <p id="recommendations" class="mb-0"></p>
+                        </div>
+
+                        <button class="btn btn-reset mt-3" onclick="resetResults()">
+                            <i class="fas fa-arrow-left"></i> New Prediction
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-white mt-4">
+            <p class="mb-0">
+                <i class="fas fa-code"></i> Developed by <strong>Talha Rehman</strong> | 
+                Powered by Machine Learning & Logistic Regression 
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Update slider values in real-time
+        const sliders = [
+            {id: 'air_temp', display: 'air_temp_val', fill: 'air_temp_fill', unit: ' K', decimals: 1, min: 290, max: 310},
+            {id: 'process_temp', display: 'process_temp_val', fill: 'process_temp_fill', unit: ' K', decimals: 1, min: 300, max: 320},
+            {id: 'rotational_speed', display: 'rotational_speed_val', fill: 'rotational_speed_fill', unit: ' rpm', decimals: 0, min: 1000, max: 3000},
+            {id: 'torque', display: 'torque_val', fill: 'torque_fill', unit: ' Nm', decimals: 1, min: 0, max: 100},
+            {id: 'tool_wear', display: 'tool_wear_val', fill: 'tool_wear_fill', unit: ' min', decimals: 0, min: 0, max: 300}
+        ];
+
+        // Function to update slider fill
+        function updateSliderFill(slider, value) {
+            const percentage = ((value - slider.min) / (slider.max - slider.min)) * 100;
+            const fillElement = document.getElementById(slider.fill);
+            fillElement.style.width = percentage + '%';
+        }
+
+        // Initialize sliders
+        sliders.forEach(slider => {
+            const input = document.getElementById(slider.id);
+            const display = document.getElementById(slider.display);
+            
+            // Set initial fill
+            updateSliderFill(slider, input.value);
+            
+            input.addEventListener('input', function() {
+                display.textContent = parseFloat(this.value).toFixed(slider.decimals) + slider.unit;
+                updateSliderFill(slider, this.value);
+            });
+        });
+
+        // Form submission
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('predictBtn');
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            const data = {
+                air_temp: parseFloat(document.getElementById('air_temp').value),
+                process_temp: parseFloat(document.getElementById('process_temp').value),
+                rotational_speed: parseFloat(document.getElementById('rotational_speed').value),
+                torque: parseFloat(document.getElementById('torque').value),
+                tool_wear: parseFloat(document.getElementById('tool_wear').value)
+            };
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayResults(result);
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Connection error. Please make sure the server is running.');
+            } finally {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        });
+
+        function displayResults(result) {
+            // Hide info card, show result card
+            document.getElementById('infoCard').style.display = 'none';
+            document.getElementById('resultCard').style.display = 'block';
+
+            // Set icon and risk level
+            const icon = document.getElementById('predictionIcon');
+            const riskLevel = document.getElementById('riskLevel');
+            
+            if (result.risk_level === 'HIGH') {
+                icon.innerHTML = '<i class="fas fa-exclamation-triangle text-danger"></i>';
+                icon.className = 'prediction-icon text-danger';
+                riskLevel.innerHTML = '<span class="badge bg-danger fs-4">HIGH RISK</span>';
+            } else if (result.risk_level === 'MODERATE') {
+                icon.innerHTML = '<i class="fas fa-exclamation-circle text-warning"></i>';
+                icon.className = 'prediction-icon text-warning';
+                riskLevel.innerHTML = '<span class="badge bg-warning fs-4">MODERATE RISK</span>';
+            } else {
+                icon.innerHTML = '<i class="fas fa-check-circle text-success"></i>';
+                icon.className = 'prediction-icon text-success';
+                riskLevel.innerHTML = '<span class="badge bg-success fs-4">LOW RISK</span>';
+            }
+
+            // Set message
+            document.getElementById('predictionMessage').textContent = result.message;
+
+            // Set probabilities
+            document.getElementById('failureProbText').textContent = result.failure_probability + '%';
+            document.getElementById('normalProbText').textContent = result.normal_probability + '%';
+
+            // Animate probability bars
+            const failureBar = document.getElementById('failureProbBar');
+            const normalBar = document.getElementById('normalProbBar');
+            
+            setTimeout(() => {
+                failureBar.style.width = result.failure_probability + '%';
+                normalBar.style.width = result.normal_probability + '%';
+                
+                if (result.failure_probability > 50) {
+                    failureBar.className = 'probability-fill bg-danger';
+                } else if (result.failure_probability > 10) {
+                    failureBar.className = 'probability-fill bg-warning';
+                } else {
+                    failureBar.className = 'probability-fill bg-success';
+                }
+                
+                failureBar.textContent = result.failure_probability + '%';
+                normalBar.textContent = result.normal_probability + '%';
+            }, 100);
+
+            // Set recommendations
+            let recommendations = '';
+            if (result.risk_level === 'HIGH') {
+                recommendations = '⚠️ IMMEDIATE ACTION REQUIRED: Stop machine operations and perform thorough maintenance check. Inspect all critical components before resuming operations.';
+            } else if (result.risk_level === 'MODERATE') {
+                recommendations = '⚠️ CAUTION: Schedule maintenance inspection soon. Monitor machine parameters closely and avoid extended high-load operations.';
+            } else {
+                recommendations = '✓ Machine is operating normally. Continue regular maintenance schedule and routine monitoring.';
+            }
+            document.getElementById('recommendations').textContent = recommendations;
+        }
+
+        function resetForm() {
+            document.getElementById('air_temp').value = 300;
+            document.getElementById('process_temp').value = 310;
+            document.getElementById('rotational_speed').value = 1500;
+            document.getElementById('torque').value = 40;
+            document.getElementById('tool_wear').value = 100;
+            
+            sliders.forEach(slider => {
+                const input = document.getElementById(slider.id);
+                const display = document.getElementById(slider.display);
+                display.textContent = parseFloat(input.value).toFixed(slider.decimals) + slider.unit;
+                updateSliderFill(slider, input.value);
+            });
+        }
+
+        function resetResults() {
+            document.getElementById('resultCard').style.display = 'none';
+            document.getElementById('infoCard').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
