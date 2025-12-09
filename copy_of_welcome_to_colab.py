@@ -1,4 +1,4 @@
-```python
+
 
 import pandas as pd
 df=pd.read_csv('/content/ai4i2020.csv')
