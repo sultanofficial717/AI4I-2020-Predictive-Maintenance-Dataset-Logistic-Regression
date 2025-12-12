@@ -1,3 +1,13 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.8%2B-orange)](https://scikit-learn.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.1%2B-green)](https://flask.palletsprojects.com/)
+[![Pandas](https://img.shields.io/badge/Pandas-2.3%2B-purple)](https://pandas.pydata.org/)
+[![Matplotlib](https://img.shields.io/badge/Matplotlib-3.10%2B-red)](https://matplotlib.org/)
+[![Seaborn](https://img.shields.io/badge/Seaborn-0.13%2B-cyan)](https://seaborn.pydata.org/)
+[![Status: Active](https://img.shields.io/badge/Status-Active-brightgreen)](https://github.com/sultanofficial717)
+[![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-blue)](https://github.com/sultanofficial717)
+[![Author: Sultan Official](https://img.shields.io/badge/Author-Sultan%20Official-informational)](https://github.com/sultanofficial717)
 # AI4I 2020 Predictive Maintenance Dataset - Logistic Regression Analysis
 
 ## Overview
@@ -234,3 +244,4 @@ This project is open source and available for educational purposes.
 ## Acknowledgments
 
 Dataset source: AI4I 2020 Predictive Maintenance Dataset
+
