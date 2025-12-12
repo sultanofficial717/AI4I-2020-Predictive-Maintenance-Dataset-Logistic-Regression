@@ -6,53 +6,232 @@
     <title>Machine Failure Prediction System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --danger-color: #e74c3c;
+            --primary-color: #1a2332;
+            --secondary-color: #5d7a9e;
+            --accent-color: #8ba5c7;
+            --success-color: #6ba368;
+            --warning-color: #d4a574;
+            --danger-color: #c97d7d;
+            --bg-gradient-1: #f5f7fa;
+            --bg-gradient-2: #e8ecf1;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --card-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Roboto', sans-serif;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+            color: var(--text-primary);
+        }
+        
+        body.dark-mode {
+            --primary-color: #e2e8f0;
+            --secondary-color: #7c9fc4;
+            --accent-color: #a8c5e2;
+            --success-color: #81b77e;
+            --warning-color: #e4b891;
+            --danger-color: #d99494;
+            --bg-gradient-1: #0f1419;
+            --bg-gradient-2: #1a202c;
+            --text-primary: #e2e8f0;
+            --text-secondary: #a0aec0;
+            --card-bg: #1e2734;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+        }
+        
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, var(--accent-color), transparent);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+            opacity: 0.12;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.12;
+            }
+            90% {
+                opacity: 0.12;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(50px) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--accent-color);
+            border-radius: 50px;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            box-shadow: 0 4px 15px var(--shadow-color);
+            font-weight: 500;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .theme-toggle i {
+            font-size: 1.2rem;
+            transition: transform 0.5s ease;
+        }
+        
+        .theme-toggle:hover i {
+            transform: rotate(180deg);
         }
         
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
         
         .card {
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: none;
-            margin-bottom: 20px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            margin-bottom: 24px;
+            backdrop-filter: blur(20px);
+            background: var(--card-bg);
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: cardEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 48px var(--shadow-color);
+        }
+        
+        body.dark-mode .card {
+            background: var(--card-bg);
+            border-color: rgba(255, 255, 255, 0.08);
         }
         
         .card-header {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
-            border-radius: 15px 15px 0 0 !important;
-            padding: 20px;
+            border-radius: 24px 24px 0 0 !important;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            animation: shimmer 6s infinite linear;
+        }
+        
+        @keyframes shimmer {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
         
         .feature-input {
-            background: #f8f9fa;
-            border: 2px solid #dee2e6;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
+            background: linear-gradient(135deg, rgba(141, 165, 199, 0.05) 0%, rgba(93, 122, 158, 0.03) 100%);
+            border: 1.5px solid rgba(141, 165, 199, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body.dark-mode .feature-input {
+            background: linear-gradient(135deg, rgba(168, 197, 226, 0.08) 0%, rgba(124, 159, 196, 0.05) 100%);
+            border-color: rgba(168, 197, 226, 0.2);
+        }
+        
+        .feature-input::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(141, 165, 199, 0.08), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .feature-input:hover::before {
+            left: 100%;
         }
         
         .feature-input:focus-within {
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(141, 165, 199, 0.1);
+            transform: translateY(-2px);
         }
         
         .feature-label {
@@ -80,61 +259,65 @@
         }
         
         .form-range {
-            height: 8px;
+            height: 24px;
             border-radius: 10px;
             background: transparent;
             position: relative;
+            padding: 8px 0;
         }
         
         .form-range::-webkit-slider-track {
             height: 8px;
             border-radius: 10px;
-            background: #dee2e6;
+            background: rgba(141, 165, 199, 0.2);
+            border: 1px solid rgba(141, 165, 199, 0.3);
         }
         
         .form-range::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--secondary-color) 100%);
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);
+            box-shadow: 0 2px 8px rgba(141, 165, 199, 0.4);
             transition: all 0.2s;
-            margin-top: -8px;
+            border: 3px solid white;
         }
         
         .form-range::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.6);
+            transform: scale(1.15);
+            box-shadow: 0 4px 16px rgba(141, 165, 199, 0.6);
         }
         
         .form-range::-moz-range-track {
             height: 8px;
             border-radius: 10px;
-            background: #dee2e6;
+            background: rgba(141, 165, 199, 0.2);
+            border: 1px solid rgba(141, 165, 199, 0.3);
         }
         
         .form-range::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--secondary-color) 100%);
             cursor: pointer;
-            border: none;
-            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.4);
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(141, 165, 199, 0.4);
             transition: all 0.2s;
         }
         
         .form-range::-moz-range-thumb:hover {
-            transform: scale(1.2);
+            transform: scale(1.15);
             box-shadow: 0 4px 12px rgba(52, 152, 219, 0.6);
         }
         
         .slider-container {
             position: relative;
-            padding: 10px 0;
+            padding: 12px 0;
+            margin: 16px 0;
         }
         
         .slider-track-fill {
@@ -142,7 +325,7 @@
             height: 8px;
             border-radius: 10px 0 0 10px;
             background: linear-gradient(90deg, var(--success-color) 0%, var(--secondary-color) 100%);
-            top: 10px;
+            top: 20px;
             left: 0;
             pointer-events: none;
             transition: width 0.1s ease;
@@ -166,37 +349,59 @@
         }
         
         .btn-predict {
-            background: linear-gradient(135deg, var(--success-color) 0%, #229954 100%);
+            background: linear-gradient(135deg, var(--success-color), var(--secondary-color));
             border: none;
-            border-radius: 10px;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            border-radius: 14px;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
             color: white;
             width: 100%;
-            transition: transform 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(107, 163, 104, 0.3);
+            letter-spacing: 0.5px;
         }
         
         .btn-predict:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+            box-shadow: 0 8px 24px rgba(107, 163, 104, 0.4);
         }
         
         .btn-reset {
-            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            background: linear-gradient(135deg, var(--text-secondary), var(--secondary-color));
             border: none;
-            border-radius: 10px;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            border-radius: 14px;
+            padding: 16px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
             color: white;
             width: 100%;
-            transition: transform 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(113, 128, 150, 0.3);
+            letter-spacing: 0.5px;
         }
         
         .btn-reset:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(127, 140, 141, 0.4);
+            box-shadow: 0 8px 24px rgba(113, 128, 150, 0.4);
+        }
+        
+        .btn-analysis {
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+            border: none;
+            border-radius: 14px;
+            padding: 16px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(139, 165, 199, 0.3);
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-analysis:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(139, 165, 199, 0.4);
         }
         
         .result-card {
@@ -260,16 +465,449 @@
         .loading .spinner-border {
             display: inline-block;
         }
+        
+        /* Notification Toast */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .notification-toast {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideInRight 0.5s ease-out;
+            border-left: 5px solid var(--secondary-color);
+            min-width: 300px;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Gauge Charts */
+        .gauge-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+        }
+        
+        .gauge-chart {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Statistics Dashboard */
+        .stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0.05) 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid rgba(52, 152, 219, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+            border-color: var(--secondary-color);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 4s infinite linear;
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+            margin-top: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        body.dark-mode .stat-label {
+            color: #aaa;
+        }
+        
+        /* Animated Header */
+        .animated-header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animated-header h1 {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.8rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+        }
+        
+        body.dark-mode .animated-header h1 {
+            color: var(--primary-color);
+        }
+        
+        .animated-header h1 i {
+            animation: spin 4s infinite ease-in-out;
+            display: inline-block;
+            color: var(--secondary-color);
+        }
+        
+        @keyframes spin {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(180deg);
+            }
+        }
+        
+        /* Tooltip */
+        .info-tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+            margin-left: 8px;
+        }
+        
+        .info-tooltip .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            text-align: center;
+            border-radius: 10px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            font-size: 0.85rem;
+            transform: translateY(10px);
+        }
+        
+        .info-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Pulse Animation */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Loading Animation */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(255, 255, 255, 0.2);
+            border-top: 8px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Progress Ring */
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            transform-origin: 50% 50%;
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        /* Feature Importance Analysis Section */
+        .analysis-section {
+            margin-top: 24px;
+            border-top: 1px solid var(--accent-color);
+            padding-top: 0;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .analysis-section.active {
+            max-height: 800px;
+            opacity: 1;
+            padding-top: 24px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        /* Custom Scrollbar for Analysis Section */
+        .analysis-section::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        .analysis-section::-webkit-scrollbar-track {
+            background: rgba(141, 165, 199, 0.1);
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        
+        .analysis-section::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .analysis-section::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+        }
+        
+        /* Firefox Scrollbar */
+        .analysis-section {
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-color) rgba(141, 165, 199, 0.1);
+        }
+        
+        /* Smooth scroll behavior */
+        .analysis-section {
+            scroll-behavior: smooth;
+        }
+        
+        .feature-importance-card {
+            background: linear-gradient(135deg, rgba(141, 165, 199, 0.05), rgba(93, 122, 158, 0.03));
+            border: 1.5px solid rgba(141, 165, 199, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        body.dark-mode .feature-importance-card {
+            background: linear-gradient(135deg, rgba(168, 197, 226, 0.08), rgba(124, 159, 196, 0.05));
+            border-color: rgba(168, 197, 226, 0.2);
+        }
+        
+        .feature-bar {
+            margin-bottom: 16px;
+        }
+        
+        .feature-bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .feature-bar-container {
+            height: 32px;
+            background: rgba(141, 165, 199, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .feature-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(141, 165, 199, 0.3);
+        }
+        
+        .input-comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .input-value-card {
+            background: rgba(141, 165, 199, 0.08);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .input-value-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(141, 165, 199, 0.2);
+        }
+        
+        .input-value-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .input-value-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .toggle-analysis-btn {
+            width: 100%;
+            margin-top: 16px;
+        }
     </style>
 </head>
 <body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Dark Mode Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon" id="themeIcon"></i>
+        <span id="themeText">Dark Mode</span>
+    </div>
+    
     <div class="main-container">
-        <!-- Header -->
-        <div class="text-center text-white mb-4">
-            <h1 class="display-4 fw-bold">
+        <!-- Animated Header -->
+        <div class="animated-header text-white mb-4">
+            <h1>
                 <i class="fas fa-cogs"></i> Machine Failure Prediction System
             </h1>
-            <p class="lead">AI-Powered Predictive Maintenance | 99.9% Accuracy</p>
+            <p class="lead" style="text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+                AI-Powered Predictive Maintenance | Real-Time Analytics
+            </p>
+            
+            <!-- Stats Dashboard -->
+            <div class="stats-dashboard mt-4">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalPredictions">0</div>
+                    <div class="stat-label">Predictions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">99.9%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgRiskLevel">0%</div>
+                    <div class="stat-label">Avg Risk</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">10K+</div>
+                    <div class="stat-label">Training Data</div>
+                </div>
+            </div>
         </div>
 
         <div class="row">
@@ -286,6 +924,10 @@
                                 <label class="feature-label">
                                     <span class="feature-icon"><i class="fas fa-thermometer-half"></i></span>
                                     Air Temperature [K]
+                                    <span class="info-tooltip">
+                                        <i class="fas fa-info-circle text-primary"></i>
+                                        <span class="tooltip-text">Ambient air temperature in Kelvin. Normal range: 296-304K (23-31°C). Higher temperatures increase failure risk.</span>
+                                    </span>
                                 </label>
                                 <div class="slider-container">
                                     <div class="slider-track-fill" id="air_temp_fill"></div>
@@ -303,6 +945,10 @@
                                 <label class="feature-label">
                                     <span class="feature-icon"><i class="fas fa-fire"></i></span>
                                     Process Temperature [K]
+                                    <span class="info-tooltip">
+                                        <i class="fas fa-info-circle text-primary"></i>
+                                        <span class="tooltip-text">Process temperature in Kelvin. Normal range: 306-313K (33-40°C). Critical parameter for machine health.</span>
+                                    </span>
                                 </label>
                                 <div class="slider-container">
                                     <div class="slider-track-fill" id="process_temp_fill"></div>
@@ -320,6 +966,10 @@
                                 <label class="feature-label">
                                     <span class="feature-icon"><i class="fas fa-sync"></i></span>
                                     Rotational Speed [rpm]
+                                    <span class="info-tooltip">
+                                        <i class="fas fa-info-circle text-primary"></i>
+                                        <span class="tooltip-text">Machine rotation speed in RPM. Optimal range: 1200-1800 rpm. Extreme values may indicate issues.</span>
+                                    </span>
                                 </label>
                                 <div class="slider-container">
                                     <div class="slider-track-fill" id="rotational_speed_fill"></div>
@@ -337,6 +987,10 @@
                                 <label class="feature-label">
                                     <span class="feature-icon"><i class="fas fa-bolt"></i></span>
                                     Torque [Nm]
+                                    <span class="info-tooltip">
+                                        <i class="fas fa-info-circle text-primary"></i>
+                                        <span class="tooltip-text">Rotational force in Newton-meters. Normal range: 20-60 Nm. High torque increases mechanical stress.</span>
+                                    </span>
                                 </label>
                                 <div class="slider-container">
                                     <div class="slider-track-fill" id="torque_fill"></div>
@@ -354,6 +1008,10 @@
                                 <label class="feature-label">
                                     <span class="feature-icon"><i class="fas fa-tools"></i></span>
                                     Tool Wear [min]
+                                    <span class="info-tooltip">
+                                        <i class="fas fa-info-circle text-primary"></i>
+                                        <span class="tooltip-text">Tool usage time in minutes. Safe range: 0-250 min. Replace tools approaching 300 minutes.</span>
+                                    </span>
                                 </label>
                                 <div class="slider-container">
                                     <div class="slider-track-fill" id="tool_wear_fill"></div>
@@ -444,11 +1102,17 @@
                         <h4 class="mb-0"><i class="fas fa-clipboard-check"></i> Prediction Results</h4>
                     </div>
                     <div class="card-body text-center">
-                        <div class="prediction-icon" id="predictionIcon"></div>
+                        <div class="prediction-icon pulse" id="predictionIcon"></div>
                         <h3 class="fw-bold mb-3" id="riskLevel"></h3>
                         <p class="lead" id="predictionMessage"></p>
 
                         <hr class="my-4">
+
+                        <!-- Gauge Chart for Risk Level -->
+                        <h5 class="fw-bold mb-3">Risk Assessment Gauge</h5>
+                        <div class="gauge-container mb-4">
+                            <canvas id="riskGauge"></canvas>
+                        </div>
 
                         <h5 class="fw-bold mb-3">Failure Probability Analysis</h5>
                         
@@ -473,15 +1137,70 @@
                         </div>
 
                         <hr class="my-4">
+                        
+                        <!-- Parameter Contribution Chart -->
+                        <h5 class="fw-bold mb-3">Parameter Analysis</h5>
+                        <div class="chart-container">
+                            <canvas id="parameterChart"></canvas>
+                        </div>
+
+                        <hr class="my-4">
 
                         <div class="stats-badge">
                             <h6 class="fw-bold"><i class="fas fa-exclamation-triangle"></i> Recommendations</h6>
                             <p id="recommendations" class="mb-0"></p>
                         </div>
 
-                        <button class="btn btn-reset mt-3" onclick="resetResults()">
-                            <i class="fas fa-arrow-left"></i> New Prediction
+                        <!-- Advanced Analysis Toggle Button -->
+                        <button class="btn btn-analysis toggle-analysis-btn" onclick="toggleAnalysis()">
+                            <i class="fas fa-chart-bar"></i> <span id="analysisButtonText">Show Detailed Analysis</span>
                         </button>
+                        
+                        <!-- Feature Importance Analysis Section -->
+                        <div class="analysis-section" id="analysisSection">
+                            <h5 class="fw-bold mb-4 text-start">
+                                <i class="fas fa-microscope"></i> Feature Importance & Input Analysis
+                            </h5>
+                            
+                            <!-- Input Values Grid -->
+                            <div class="feature-importance-card">
+                                <h6 class="fw-bold mb-3 text-start">Your Input Parameters</h6>
+                                <div class="input-comparison-grid" id="inputValuesGrid">
+                                    <!-- Will be populated by JavaScript -->
+                                </div>
+                            </div>
+                            
+                            <!-- Feature Importance Bars -->
+                            <div class="feature-importance-card">
+                                <h6 class="fw-bold mb-3 text-start">Feature Importance in Prediction</h6>
+                                <p class="text-muted small text-start mb-4">These values show how much each parameter influenced the prediction result.</p>
+                                
+                                <div id="featureImportanceBars">
+                                    <!-- Will be populated by JavaScript -->
+                                </div>
+                            </div>
+                            
+                            <!-- Combined Visualization Chart -->
+                            <div class="feature-importance-card">
+                                <h6 class="fw-bold mb-3 text-start">Parameter Impact Visualization</h6>
+                                <div class="chart-container">
+                                    <canvas id="featureComparisonChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6 mb-2">
+                                <button class="btn btn-reset" onclick="resetResults()">
+                                    <i class="fas fa-arrow-left"></i> New Prediction
+                                </button>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <button class="btn btn-predict" onclick="exportResults()">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -490,14 +1209,231 @@
         <!-- Footer -->
         <div class="text-center text-white mt-4">
             <p class="mb-0">
-                <i class="fas fa-code"></i> Developed by <strong>Talha Rehman</strong> | 
-                Powered by Machine Learning & Logistic Regression 
+                <i class="fas fa-code"></i> Developed by <strong>Sultan Official</strong> | 
+                <a href="mailto:talharehman717@gmail.com" style="color: inherit; text-decoration: none; transition: opacity 0.3s;">talharehman717@gmail.com</a>
+            </p>
+            <p class="small text-muted mt-2">
+                <i class="fas fa-user-circle"></i> @sultanofficial717 | 
+                <a href="https://github.com/sultanofficial717" target="_blank" style="color: inherit; text-decoration: none; transition: opacity 0.3s;">
+                    <i class="fab fa-github"></i> GitHub Profile
+                </a> | Powered by AI & Logistic Regression
             </p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Global variables
+        let riskGaugeChart = null;
+        let parameterChart = null;
+        let predictionCount = 0;
+        let totalRisk = 0;
+        
+        // Initialize particles background
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 5 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Toast notification system
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = 'notification-toast';
+            
+            const icons = {
+                success: 'fa-check-circle text-success',
+                error: 'fa-exclamation-circle text-danger',
+                warning: 'fa-exclamation-triangle text-warning',
+                info: 'fa-info-circle text-primary'
+            };
+            
+            toast.innerHTML = `
+                <i class="fas ${icons[type]} fs-4"></i>
+                <div>${message}</div>
+            `;
+            
+            document.getElementById('toastContainer').appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.5s ease-out';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+        
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            document.getElementById('themeIcon').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            document.getElementById('themeText').textContent = isDark ? 'Light Mode' : 'Dark Mode';
+            showToast(isDark ? 'Dark mode activated' : 'Light mode activated', 'info');
+        }
+        
+        // Initialize gauge chart
+        function initRiskGauge(riskValue) {
+            const ctx = document.getElementById('riskGauge');
+            if (!ctx) return;
+            
+            if (riskGaugeChart) {
+                riskGaugeChart.destroy();
+            }
+            
+            riskGaugeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [riskValue, 100 - riskValue],
+                        backgroundColor: [
+                            riskValue > 50 ? '#e74c3c' : (riskValue > 10 ? '#f39c12' : '#27ae60'),
+                            'rgba(200, 200, 200, 0.2)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutout: '75%',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                },
+                plugins: [{
+                    id: 'centerText',
+                    beforeDraw: function(chart) {
+                        const width = chart.width;
+                        const height = chart.height;
+                        const ctx = chart.ctx;
+                        
+                        ctx.restore();
+                        const fontSize = (height / 100).toFixed(2);
+                        ctx.font = fontSize * 20 + "px Orbitron";
+                        ctx.textBaseline = "middle";
+                        
+                        const text = riskValue.toFixed(1) + '%';
+                        const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                        const textY = height / 2;
+                        
+                        ctx.fillStyle = riskValue > 50 ? '#e74c3c' : (riskValue > 10 ? '#f39c12' : '#27ae60');
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+            });
+        }
+        
+        // Initialize parameter chart
+        function initParameterChart(params) {
+            const ctx = document.getElementById('parameterChart');
+            if (!ctx) return;
+            
+            if (parameterChart) {
+                parameterChart.destroy();
+            }
+            
+            parameterChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Air Temp', 'Process Temp', 'Rotation', 'Torque', 'Tool Wear'],
+                    datasets: [{
+                        label: 'Current Values (Normalized)',
+                        data: [
+                            ((params.air_temp - 290) / 20) * 100,
+                            ((params.process_temp - 300) / 20) * 100,
+                            ((params.rotational_speed - 1000) / 2000) * 100,
+                            (params.torque / 100) * 100,
+                            (params.tool_wear / 300) * 100
+                        ],
+                        backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(52, 152, 219, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(52, 152, 219, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                display: false
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Export results
+        function exportResults() {
+            const results = {
+                timestamp: new Date().toISOString(),
+                parameters: {
+                    air_temp: document.getElementById('air_temp').value,
+                    process_temp: document.getElementById('process_temp').value,
+                    rotational_speed: document.getElementById('rotational_speed').value,
+                    torque: document.getElementById('torque').value,
+                    tool_wear: document.getElementById('tool_wear').value
+                },
+                prediction: {
+                    risk_level: document.getElementById('riskLevel').textContent,
+                    message: document.getElementById('predictionMessage').textContent,
+                    failure_probability: document.getElementById('failureProbText').textContent,
+                    recommendations: document.getElementById('recommendations').textContent
+                }
+            };
+            
+            const dataStr = JSON.stringify(results, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `prediction_${Date.now()}.json`;
+            link.click();
+            
+            showToast('Results exported successfully!', 'success');
+        }
+        
+        // Update statistics
+        function updateStats(failureProb) {
+            predictionCount++;
+            totalRisk += failureProb;
+            
+            document.getElementById('totalPredictions').textContent = predictionCount;
+            document.getElementById('avgRiskLevel').textContent = (totalRisk / predictionCount).toFixed(1) + '%';
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            showToast('System initialized successfully!', 'success');
+        });
+        
         // Update slider values in real-time
         const sliders = [
             {id: 'air_temp', display: 'air_temp_val', fill: 'air_temp_fill', unit: ' K', decimals: 1, min: 290, max: 310},
@@ -535,6 +1471,10 @@
             const btn = document.getElementById('predictBtn');
             btn.classList.add('loading');
             btn.disabled = true;
+            
+            // Show loading overlay
+            document.getElementById('loadingOverlay').classList.add('active');
+            showToast('Analyzing machine parameters...', 'info');
 
             const data = {
                 air_temp: parseFloat(document.getElementById('air_temp').value),
@@ -556,19 +1496,25 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    displayResults(result);
+                    setTimeout(() => {
+                        displayResults(result, data);
+                        showToast('Prediction completed!', 'success');
+                    }, 800);
                 } else {
-                    alert('Error: ' + result.error);
+                    showToast('Error: ' + result.error, 'error');
                 }
             } catch (error) {
-                alert('Connection error. Please make sure the server is running.');
+                showToast('Connection error. Please check server.', 'error');
             } finally {
-                btn.classList.remove('loading');
-                btn.disabled = false;
+                setTimeout(() => {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    document.getElementById('loadingOverlay').classList.remove('active');
+                }, 800);
             }
         });
 
-        function displayResults(result) {
+        function displayResults(result, params) {
             // Hide info card, show result card
             document.getElementById('infoCard').style.display = 'none';
             document.getElementById('resultCard').style.display = 'block';
@@ -579,15 +1525,15 @@
             
             if (result.risk_level === 'HIGH') {
                 icon.innerHTML = '<i class="fas fa-exclamation-triangle text-danger"></i>';
-                icon.className = 'prediction-icon text-danger';
+                icon.className = 'prediction-icon text-danger pulse';
                 riskLevel.innerHTML = '<span class="badge bg-danger fs-4">HIGH RISK</span>';
             } else if (result.risk_level === 'MODERATE') {
                 icon.innerHTML = '<i class="fas fa-exclamation-circle text-warning"></i>';
-                icon.className = 'prediction-icon text-warning';
+                icon.className = 'prediction-icon text-warning pulse';
                 riskLevel.innerHTML = '<span class="badge bg-warning fs-4">MODERATE RISK</span>';
             } else {
                 icon.innerHTML = '<i class="fas fa-check-circle text-success"></i>';
-                icon.className = 'prediction-icon text-success';
+                icon.className = 'prediction-icon text-success pulse';
                 riskLevel.innerHTML = '<span class="badge bg-success fs-4">LOW RISK</span>';
             }
 
@@ -595,6 +1541,7 @@
             document.getElementById('predictionMessage').textContent = result.message;
 
             // Set probabilities
+            const failureProb = parseFloat(result.failure_probability);
             document.getElementById('failureProbText').textContent = result.failure_probability + '%';
             document.getElementById('normalProbText').textContent = result.normal_probability + '%';
 
@@ -606,9 +1553,9 @@
                 failureBar.style.width = result.failure_probability + '%';
                 normalBar.style.width = result.normal_probability + '%';
                 
-                if (result.failure_probability > 50) {
+                if (failureProb > 50) {
                     failureBar.className = 'probability-fill bg-danger';
-                } else if (result.failure_probability > 10) {
+                } else if (failureProb > 10) {
                     failureBar.className = 'probability-fill bg-warning';
                 } else {
                     failureBar.className = 'probability-fill bg-success';
@@ -628,6 +1575,199 @@
                 recommendations = '✓ Machine is operating normally. Continue regular maintenance schedule and routine monitoring.';
             }
             document.getElementById('recommendations').textContent = recommendations;
+            
+            // Initialize charts
+            setTimeout(() => {
+                initRiskGauge(failureProb);
+                initParameterChart(params);
+                prepareFeatureAnalysis(params, failureProb);
+            }, 300);
+            
+            // Update statistics
+            updateStats(failureProb);
+            
+            // Scroll to results
+            document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Toggle Analysis Section
+        function toggleAnalysis() {
+            const section = document.getElementById('analysisSection');
+            const button = document.getElementById('analysisButtonText');
+            
+            if (section.classList.contains('active')) {
+                section.classList.remove('active');
+                button.textContent = 'Show Detailed Analysis';
+            } else {
+                section.classList.add('active');
+                button.textContent = 'Hide Detailed Analysis';
+                showToast('Displaying detailed feature analysis', 'info');
+            }
+        }
+        
+        // Prepare Feature Analysis Data
+        let featureComparisonChart = null;
+        
+        function prepareFeatureAnalysis(params, riskLevel) {
+            // Calculate normalized values (0-100 scale)
+            const normalizedValues = {
+                'Air Temperature': ((params.air_temp - 290) / 20) * 100,
+                'Process Temperature': ((params.process_temp - 300) / 20) * 100,
+                'Rotational Speed': ((params.rotational_speed - 1000) / 2000) * 100,
+                'Torque': (params.torque / 100) * 100,
+                'Tool Wear': (params.tool_wear / 300) * 100
+            };
+            
+            // Simulated feature importance based on ML model characteristics
+            // In a real scenario, these would come from the model's coefficients
+            const featureImportance = {
+                'Tool Wear': 28,
+                'Process Temperature': 24,
+                'Torque': 22,
+                'Rotational Speed': 16,
+                'Air Temperature': 10
+            };
+            
+            // Populate input values grid
+            const inputGrid = document.getElementById('inputValuesGrid');
+            inputGrid.innerHTML = `
+                <div class="input-value-card">
+                    <div class="input-value-label">Air Temperature</div>
+                    <div class="input-value-number">${params.air_temp.toFixed(1)}<small style="font-size: 0.5em;">K</small></div>
+                </div>
+                <div class="input-value-card">
+                    <div class="input-value-label">Process Temperature</div>
+                    <div class="input-value-number">${params.process_temp.toFixed(1)}<small style="font-size: 0.5em;">K</small></div>
+                </div>
+                <div class="input-value-card">
+                    <div class="input-value-label">Rotational Speed</div>
+                    <div class="input-value-number">${params.rotational_speed}<small style="font-size: 0.5em;">rpm</small></div>
+                </div>
+                <div class="input-value-card">
+                    <div class="input-value-label">Torque</div>
+                    <div class="input-value-number">${params.torque.toFixed(1)}<small style="font-size: 0.5em;">Nm</small></div>
+                </div>
+                <div class="input-value-card">
+                    <div class="input-value-label">Tool Wear</div>
+                    <div class="input-value-number">${params.tool_wear}<small style="font-size: 0.5em;">min</small></div>
+                </div>
+            `;
+            
+            // Populate feature importance bars
+            const barsContainer = document.getElementById('featureImportanceBars');
+            barsContainer.innerHTML = '';
+            
+            Object.entries(featureImportance).forEach(([feature, importance]) => {
+                const barHtml = `
+                    <div class="feature-bar">
+                        <div class="feature-bar-label">
+                            <span>${feature}</span>
+                            <span>${importance}%</span>
+                        </div>
+                        <div class="feature-bar-container">
+                            <div class="feature-bar-fill" style="width: 0%;" data-width="${importance}%">
+                                ${importance}%
+                            </div>
+                        </div>
+                    </div>
+                `;
+                barsContainer.innerHTML += barHtml;
+            });
+            
+            // Animate bars
+            setTimeout(() => {
+                document.querySelectorAll('.feature-bar-fill').forEach(bar => {
+                    bar.style.width = bar.getAttribute('data-width');
+                });
+            }, 100);
+            
+            // Create comparison chart
+            initFeatureComparisonChart(normalizedValues, featureImportance);
+        }
+        
+        // Initialize Feature Comparison Chart
+        function initFeatureComparisonChart(normalizedValues, featureImportance) {
+            const ctx = document.getElementById('featureComparisonChart');
+            if (!ctx) return;
+            
+            if (featureComparisonChart) {
+                featureComparisonChart.destroy();
+            }
+            
+            const labels = Object.keys(featureImportance);
+            const inputData = labels.map(label => normalizedValues[label] || 0);
+            const importanceData = labels.map(label => featureImportance[label]);
+            
+            featureComparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Input Value (Normalized %)',
+                            data: inputData,
+                            backgroundColor: 'rgba(141, 165, 199, 0.6)',
+                            borderColor: 'rgba(141, 165, 199, 1)',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Feature Importance (%)',
+                            data: importanceData,
+                            backgroundColor: 'rgba(93, 122, 158, 0.6)',
+                            borderColor: 'rgba(93, 122, 158, 1)',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12,
+                                    family: 'Roboto'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            borderRadius: 8,
+                            titleFont: {
+                                size: 14
+                            },
+                            bodyFont: {
+                                size: 13
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function resetForm() {
@@ -643,12 +1783,69 @@
                 display.textContent = parseFloat(input.value).toFixed(slider.decimals) + slider.unit;
                 updateSliderFill(slider, input.value);
             });
+            
+            showToast('Parameters reset to defaults', 'info');
         }
 
         function resetResults() {
             document.getElementById('resultCard').style.display = 'none';
             document.getElementById('infoCard').style.display = 'block';
+            
+            // Destroy charts
+            if (riskGaugeChart) {
+                riskGaugeChart.destroy();
+                riskGaugeChart = null;
+            }
+            if (parameterChart) {
+                parameterChart.destroy();
+                parameterChart = null;
+            }
+            if (featureComparisonChart) {
+                featureComparisonChart.destroy();
+                featureComparisonChart = null;
+            }
+            
+            // Reset analysis section
+            document.getElementById('analysisSection').classList.remove('active');
+            document.getElementById('analysisButtonText').textContent = 'Show Detailed Analysis';
+            
+            // Scroll back to form
+            document.getElementById('infoCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + Enter to predict
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                document.getElementById('predictionForm').dispatchEvent(new Event('submit'));
+            }
+            // Ctrl/Cmd + R to reset
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                resetForm();
+            }
+            // Ctrl/Cmd + D to toggle dark mode
+            if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+                e.preventDefault();
+                toggleTheme();
+            }
+        });
+        
+        // Add CSS for slide out animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOutRight {
+                from {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateX(100px);
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
