@@ -1152,42 +1152,9 @@
                         </div>
 
                         <!-- Advanced Analysis Toggle Button -->
-                        <button class="btn btn-analysis toggle-analysis-btn" onclick="toggleAnalysis()">
-                            <i class="fas fa-chart-bar"></i> <span id="analysisButtonText">Show Detailed Analysis</span>
+                        <button class="btn btn-analysis toggle-analysis-btn" data-bs-toggle="modal" data-bs-target="#analysisModal">
+                            <i class="fas fa-chart-bar"></i> Show Detailed Analysis
                         </button>
-                        
-                        <!-- Feature Importance Analysis Section -->
-                        <div class="analysis-section" id="analysisSection">
-                            <h5 class="fw-bold mb-4 text-start">
-                                <i class="fas fa-microscope"></i> Feature Importance & Input Analysis
-                            </h5>
-                            
-                            <!-- Input Values Grid -->
-                            <div class="feature-importance-card">
-                                <h6 class="fw-bold mb-3 text-start">Your Input Parameters</h6>
-                                <div class="input-comparison-grid" id="inputValuesGrid">
-                                    <!-- Will be populated by JavaScript -->
-                                </div>
-                            </div>
-                            
-                            <!-- Feature Importance Bars -->
-                            <div class="feature-importance-card">
-                                <h6 class="fw-bold mb-3 text-start">Feature Importance in Prediction</h6>
-                                <p class="text-muted small text-start mb-4">These values show how much each parameter influenced the prediction result.</p>
-                                
-                                <div id="featureImportanceBars">
-                                    <!-- Will be populated by JavaScript -->
-                                </div>
-                            </div>
-                            
-                            <!-- Combined Visualization Chart -->
-                            <div class="feature-importance-card">
-                                <h6 class="fw-bold mb-3 text-start">Parameter Impact Visualization</h6>
-                                <div class="chart-container">
-                                    <canvas id="featureComparisonChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="row mt-3">
                             <div class="col-md-6 mb-2">
@@ -1218,6 +1185,50 @@
                     <i class="fab fa-github"></i> GitHub Profile
                 </a> | Powered by AI & Logistic Regression
             </p>
+        </div>
+    </div>
+
+    <!-- Analysis Modal -->
+    <div class="modal fade" id="analysisModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-microscope"></i> Feature Importance & Input Analysis</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="analysisModalContent">
+                        <!-- Input Values Grid -->
+                        <div class="feature-importance-card">
+                            <h6 class="fw-bold mb-3 text-start">Your Input Parameters</h6>
+                            <div class="input-comparison-grid" id="inputValuesGrid">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <!-- Feature Importance Bars -->
+                        <div class="feature-importance-card">
+                            <h6 class="fw-bold mb-3 text-start">Feature Importance in Prediction</h6>
+                            <p class="text-muted small text-start mb-4">These values show how much each parameter influenced the prediction result.</p>
+                            
+                            <div id="featureImportanceBars">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <!-- Combined Visualization Chart -->
+                        <div class="feature-importance-card">
+                            <h6 class="fw-bold mb-3 text-start">Parameter Impact Visualization</h6>
+                            <div class="chart-container">
+                                <canvas id="featureComparisonChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1590,20 +1601,6 @@
             document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
         
-        // Toggle Analysis Section
-        function toggleAnalysis() {
-            const section = document.getElementById('analysisSection');
-            const button = document.getElementById('analysisButtonText');
-            
-            if (section.classList.contains('active')) {
-                section.classList.remove('active');
-                button.textContent = 'Show Detailed Analysis';
-            } else {
-                section.classList.add('active');
-                button.textContent = 'Hide Detailed Analysis';
-                showToast('Displaying detailed feature analysis', 'info');
-            }
-        }
         
         // Prepare Feature Analysis Data
         let featureComparisonChart = null;
@@ -1805,10 +1802,6 @@
                 featureComparisonChart = null;
             }
             
-            // Reset analysis section
-            document.getElementById('analysisSection').classList.remove('active');
-            document.getElementById('analysisButtonText').textContent = 'Show Detailed Analysis';
-            
             // Scroll back to form
             document.getElementById('infoCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -1846,6 +1839,17 @@
             }
         `;
         document.head.appendChild(style);
+
+        // Handle chart resizing when modal is shown
+        const analysisModal = document.getElementById('analysisModal');
+        if (analysisModal) {
+            analysisModal.addEventListener('shown.bs.modal', function () {
+                if (featureComparisonChart) {
+                    featureComparisonChart.resize();
+                    featureComparisonChart.update();
+                }
+            });
+        }
     </script>
 </body>
 </html>
