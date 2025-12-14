@@ -233,7 +233,7 @@ python visualizations.py
 
 ## Author
 
-**sultanofficial**
+**Talha Rehman**
 - GitHub: [@sultanofficial717](https://github.com/sultanofficial717)
 - Email: talharehman717@gmail.com
 
