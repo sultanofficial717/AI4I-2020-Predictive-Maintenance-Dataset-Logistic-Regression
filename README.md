@@ -8,10 +8,18 @@
 [![Status: Active](https://img.shields.io/badge/Status-Active-brightgreen)](https://github.com/sultanofficial717)
 [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-blue)](https://github.com/sultanofficial717)
 [![Author: Sultan Official](https://img.shields.io/badge/Author-Sultan%20Official-informational)](https://github.com/sultanofficial717)
+
 # AI4I 2020 Predictive Maintenance Dataset - Logistic Regression Analysis
 
 ## Overview
-This project implements a machine learning solution for predictive maintenance using the AI4I 2020 dataset. The logistic regression model achieves **99.9% accuracy** in predicting machine failures based on operational parameters.
+This project implements a complete machine learning solution for predictive maintenance using the AI4I 2020 dataset. It includes a **Flask web application** with an interactive UI for real-time machine failure predictions, along with comprehensive data analysis and visualizations. The logistic regression model achieves **99.9% accuracy** in predicting machine failures based on operational parameters.
+
+## Features
+- 🌐 **Interactive Web Application** - Flask-based UI for real-time predictions
+- 📊 **Model Metrics Dashboard** - View all 10 visualization graphs in a popup modal
+- 🎯 **Real-time Predictions** - Input machine parameters and get instant failure predictions
+- 📈 **Comprehensive Visualizations** - 10 detailed analysis graphs with insights
+- 🔧 **RESTful API** - JSON-based prediction endpoint for integration
 
 ## Dataset
 The AI4I 2020 Predictive Maintenance Dataset contains 10,000 data points with the following features:
@@ -31,10 +39,25 @@ The AI4I 2020 Predictive Maintenance Dataset contains 10,000 data points with th
 ## Project Structure
 ```
 ├── ai4i2020.csv                      # Dataset
-├── copy_of_welcome_to_colab.py       # Main analysis script
+├── app.py                            # Flask web application
+├── copy_of_welcome_to_colab.py       # Main analysis script (Jupyter/Colab)
 ├── visualizations.py                 # Generate all visualizations
 ├── requirements.txt                  # Python dependencies
-└── visualizations/                   # Generated graphs
+├── model.pkl                         # Trained logistic regression model
+├── scaler.pkl                        # StandardScaler for feature scaling
+├── templates/
+│   └── index.html                    # Web application frontend
+└── visualizations/                   # Generated analysis graphs
+    ├── 01_air_temperature_boxplot.png
+    ├── 02_process_temperature_boxplot.png
+    ├── 03_rotational_speed_boxplot.png
+    ├── 04_torque_boxplot.png
+    ├── 05_tool_wear_boxplot.png
+    ├── 06_correlation_outliers.png
+    ├── 07_correlation_all_features.png
+    ├── 08_distributions_before_scaling.png
+    ├── 09_distributions_after_scaling.png
+    └── 10_roc_curve.png
 ```
 
 ## Installation
@@ -49,6 +72,7 @@ cd AI4I-2020-Predictive-Maintenance-Dataset-Logistic-Regression
 ```bash
 python -m venv .venv
 .venv\Scripts\activate  # On Windows
+source .venv/bin/activate  # On Linux/Mac
 ```
 
 3. Install dependencies:
@@ -58,14 +82,35 @@ pip install -r requirements.txt
 
 ## Usage
 
-Run the main analysis:
+### Run the Web Application
 ```bash
-python copy_of_welcome_to_colab.py
+python app.py
 ```
+The application will start on `http://localhost:7000`
 
-Generate visualizations:
+### Web Application Features
+- **Prediction Form**: Enter machine parameters (temperature, speed, torque, tool wear) to predict failure
+- **Model Metrics Button**: Click to view all 10 analysis graphs in a popup modal
+- **Feature Statistics**: View min, max, and mean values for each feature
+- **Real-time Results**: Get instant predictions with probability scores
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Web application home page |
+| `/predict` | POST | Make failure prediction (JSON input) |
+| `/stats` | GET | Get feature statistics |
+| `/visualizations/<filename>` | GET | Serve visualization images |
+
+### Generate Visualizations
 ```bash
 python visualizations.py
+```
+
+### Run Analysis Script
+```bash
+python copy_of_welcome_to_colab.py
 ```
 
 ---
@@ -225,6 +270,7 @@ python visualizations.py
 ## Technologies Used
 
 - **Python 3.13**
+- **Flask** - Web application framework
 - **pandas** - Data manipulation and analysis
 - **matplotlib** - Data visualization
 - **seaborn** - Statistical data visualization
@@ -237,11 +283,17 @@ python visualizations.py
 - GitHub: [@sultanofficial717](https://github.com/sultanofficial717)
 - Email: talharehman717@gmail.com
 
+## Contributor
+
+**Abdul Rehman**
+- GitHub: [@abdulawan052](https://github.com/abdulawan052)
+
 ## License
 
-This project is open source and available for educational purposes.
+This project is open source and available under the MIT License for educational purposes.
 
 ## Acknowledgments
 
-Dataset source: AI4I 2020 Predictive Maintenance Dataset
+- Dataset source: AI4I 2020 Predictive Maintenance Dataset
+- Thanks to all contributors who helped improve this project
 

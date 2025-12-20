@@ -3,7 +3,7 @@ Machine Failure Prediction Web Application
 Flask backend for predictive maintenance
 """
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import pandas as pd
 import pickle
 import os
@@ -151,7 +151,30 @@ def statistics():
     
     return jsonify(stats)
 
+@app.route('/visualizations/<path:filename>')
+def serve_visualization(filename):
+    """Serve visualization images"""
+    return send_from_directory('visualizations', filename)
+
+@app.route('/api/graphs')
+def get_graphs():
+    """Get list of available visualization graphs"""
+    graphs = [
+        {'id': '01_air_temperature_boxplot.png', 'name': 'Air Temperature Box Plot', 'description': 'Distribution of air temperature readings with outlier detection'},
+        {'id': '02_process_temperature_boxplot.png', 'name': 'Process Temperature Box Plot', 'description': 'Distribution of process temperature during operations'},
+        {'id': '03_rotational_speed_boxplot.png', 'name': 'Rotational Speed Box Plot', 'description': 'Machine rotational speed distribution and outliers'},
+        {'id': '04_torque_boxplot.png', 'name': 'Torque Box Plot', 'description': 'Torque distribution and mechanical stress analysis'},
+        {'id': '05_tool_wear_boxplot.png', 'name': 'Tool Wear Box Plot', 'description': 'Tool wear patterns and usage time analysis'},
+        {'id': '06_correlation_outliers.png', 'name': 'Correlation Matrix (Outliers)', 'description': 'Feature correlations highlighting outlier patterns'},
+        {'id': '07_correlation_all_features.png', 'name': 'Correlation Matrix (All Features)', 'description': 'Complete correlation analysis of all features'},
+        {'id': '08_distributions_before_scaling.png', 'name': 'Distributions (Before Scaling)', 'description': 'Feature distributions before standardization'},
+        {'id': '09_distributions_after_scaling.png', 'name': 'Distributions (After Scaling)', 'description': 'Feature distributions after standardization'},
+        {'id': '10_roc_curve.png', 'name': 'ROC Curve', 'description': 'Model performance with AUC score and random classifier baseline'}
+    ]
+    return jsonify(graphs)
+
 if __name__ == '__main__':
     print("Starting Machine Failure Prediction Web App...")
-    print("Navigate to: http://localhost:5000")
-    app.run(debug=True, port=5000)
+    print("Navigate to: http://localhost:7000")
+    # Running on port 6000
+    app.run(debug=True, port=7000)
