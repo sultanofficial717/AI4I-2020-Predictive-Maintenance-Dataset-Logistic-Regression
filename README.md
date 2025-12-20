@@ -279,7 +279,7 @@ python copy_of_welcome_to_colab.py
 
 ## Author
 
-**Sultan Official**
+**Talha Rehman**
 - GitHub: [@sultanofficial717](https://github.com/sultanofficial717)
 - Email: talharehman717@gmail.com
 
